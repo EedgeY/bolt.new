@@ -31,7 +31,7 @@ export function Chat() {
       <ToastContainer
         closeButton={({ closeToast }) => {
           return (
-            <button className="Toastify__close-button" onClick={closeToast}>
+            <button className="Toastify__close-button" onClick={closeToast} title="閉じる">
               <div className="i-ph:x text-lg" />
             </button>
           );

@@ -14,10 +14,7 @@
     "test:watch": "vitest",
     "lint": "eslint --cache --cache-location ./node_modules/.cache/eslint .",
     "lint:fix": "npm run lint -- --fix",
-    "start": "bindings=$(./bindings.sh) && wrangler pages dev ./build/client $bindings",
-    "typecheck": "tsc",
-    "typegen": "wrangler types",
-    "preview": "pnpm run build && pnpm run start"
+    "start": "node -e \"const os = require('os'); const { execSync } = require('child_process'); const isWindows = os.platform() === 'win32'; const bindingsScript = isWindows ? './bindings.ps1' : './bindings.sh'; const bindings = execSync(isWindows ? 'powershell -Command ./bindings.ps1' : 'bash ./bindings.sh', { encoding: 'utf-8' }).trim(); execSync(`wrangler pages dev ./build/client ${bindings}`, {stdio: 'inherit'});\""
   },
   "engines": {
     "node": ">=18.18.0"

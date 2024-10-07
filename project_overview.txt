@@ -1,0 +1,55 @@
+プロジェクト概要：Bolt - StackBlitz AI Agent
+
+1. システム構成
+   - フロントエンド：React、Remix
+   - バックエンド：Cloudflare Workers
+   - 開発環境：WebContainer API
+   - その他：AI SDK（Anthropic、Google、OpenAI）
+
+2. 主要コンポーネント
+   - ユーザーインターフェース（UI）
+   - チャットシステム
+   - コード生成・実行環境
+   - AI統合
+
+3. 重要なファイル
+   - app/routes/_index.tsx：メインルートコンポーネント
+   - app/components/chat/BaseChat.tsx：チャットUIの基本コンポーネント
+   - app/routes/api.chat.ts：チャットAPIエンドポイント
+   - app/routes/api.enhancer.ts：コード生成・環境セットアップロジック
+   - app/routes/chat.$id.tsx：個別チャットルート
+   - app/lib/.server/llm/prompts.ts：プロンプト処理ロジック
+   - app/utils/markdown.ts：マークダウン処理ユーティリティ
+   - app/utils/constants.ts：定数定義
+   - app/lib/.server/llm/stream-text.ts：テキストストリーミング処理
+
+4. 設定ファイル
+   - package.json：プロジェクト依存関係と設定
+   - bindings.js：環境変数バインディング処理
+   - bindings.ps1：Windows用バインディングスクリプト
+   - bindings.sh：Unix系OS用バインディングスクリプト
+
+5. 主要な機能
+   - ユーザーからのプロンプト入力
+   - AIを使用したコード生成
+   - 生成されたコードの実行とプレビュー
+   - リアルタイムのコード編集と結果表示
+
+6. 開発環境セットアップ
+   - 環境変数の設定（.env.localファイル）
+   - クロスプラットフォーム対応のstart scriptの実装
+
+7. 最近の変更点
+   - Windows環境での実行に関する問題を解決
+   - bindings.jsファイルの導入による環境変数の動的読み込み
+   - package.jsonのstartスクリプトの改善
+
+8. 今後の課題
+   - クロスプラットフォーム互換性の継続的な改善
+   - AIモデルの統合と最適化
+   - ユーザーインターフェースの拡張と改善
+
+このプロジェクトは、AIを活用したコード生成と実行環境を提供するWebアプリケーションです。
+ユーザーは自然言語でプロンプトを入力し、AIがそれを解釈してコードを生成します。
+生成されたコードはリアルタイムで実行され、結果がユーザーに表示されます。
+システムは複数のAIプロバイダーを統合し、Cloudflare Workersを使用してスケーラブルなバックエンドを提供しています。
