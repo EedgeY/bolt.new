@@ -1,6 +1,6 @@
 import { type ActionFunctionArgs } from '@remix-run/cloudflare';
 import { MAX_RESPONSE_SEGMENTS, MAX_TOKENS } from '~/lib/.server/llm/constants';
-import { CONTINUE_PROMPT } from '~/lib/.server/llm/prompts';
+import { CONTINUE_PROMPT, type ModelType } from '~/lib/.server/llm/prompts';
 import { streamText, type Messages, type StreamingOptions } from '~/lib/.server/llm/stream-text';
 import SwitchableStream from '~/lib/.server/llm/switchable-stream';
 
@@ -9,13 +9,14 @@ export async function action(args: ActionFunctionArgs) {
 }
 
 async function chatAction({ context, request }: ActionFunctionArgs) {
-  const { messages } = await request.json<{ messages: Messages }>();
+  const { messages, modelType } = await request.json<{ messages: Messages; modelType: ModelType }>();
 
   const stream = new SwitchableStream();
 
   try {
-    const options: StreamingOptions = {
+    const options: StreamingOptions & { modelType: ModelType } = {
       toolChoice: 'none',
+      modelType, // 選択されたモデルタイプを追加
       onFinish: async ({ text: content, finishReason }) => {
         if (finishReason !== 'length') {
           return stream.close();

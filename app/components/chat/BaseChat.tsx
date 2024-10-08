@@ -10,6 +10,9 @@ import { SendButton } from './SendButton.client';
 
 import styles from './BaseChat.module.scss';
 
+type ModelType = 'gpt-4o' | 'gpt-4o-mini' | 'gemini-1.5-pro';
+const AVAILABLE_MODELS: ModelType[] = ['gpt-4o', 'gpt-4o-mini', 'gemini-1.5-pro'];
+
 interface BaseChatProps {
   textareaRef?: React.RefObject<HTMLTextAreaElement> | undefined;
   messageRef?: RefCallback<HTMLDivElement> | undefined;
@@ -25,6 +28,8 @@ interface BaseChatProps {
   sendMessage?: (event: React.UIEvent, messageInput?: string) => void;
   handleInputChange?: (event: React.ChangeEvent<HTMLTextAreaElement>) => void;
   enhancePrompt?: () => void;
+  selectedModel: ModelType;
+  onModelChange: (model: ModelType) => void;
 }
 
 const EXAMPLE_PROMPTS = [
@@ -54,6 +59,8 @@ export const BaseChat = React.forwardRef<HTMLDivElement, BaseChatProps>(
       handleInputChange,
       enhancePrompt,
       handleStop,
+      selectedModel,
+      onModelChange,
     },
     ref,
   ) => {
@@ -206,6 +213,23 @@ export const BaseChat = React.forwardRef<HTMLDivElement, BaseChatProps>(
             )}
           </div>
           <ClientOnly>{() => <Workbench chatStarted={chatStarted} isStreaming={isStreaming} />}</ClientOnly>
+        </div>
+        <div className="flex items-center mb-4">
+          <label htmlFor="model-select" className="mr-2">
+            Select Model:
+          </label>
+          <select
+            id="model-select"
+            value={selectedModel}
+            onChange={(e) => onModelChange(e.target.value as ModelType)}
+            className="border rounded p-1"
+          >
+            {AVAILABLE_MODELS.map((model) => (
+              <option key={model} value={model}>
+                {model}
+              </option>
+            ))}
+          </select>
         </div>
       </div>
     );

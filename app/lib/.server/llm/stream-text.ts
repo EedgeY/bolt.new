@@ -1,8 +1,8 @@
 import { streamText as _streamText, convertToCoreMessages } from 'ai';
 import { getAPIKey, getGoogleAPIKey } from '~/lib/.server/llm/api-key';
-import { getGoogleGenerativeAIModel, getOpenAIModel } from '~/lib/.server/llm/model';
+import { getGoogleGenerativeAIModel, getOpenAI4oModel, getOpenAI4ominiModel } from '~/lib/.server/llm/model';
 import { MAX_TOKENS } from './constants';
-import { getSystemPrompt } from './prompts';
+import { getSystemPrompt, type ModelType } from './prompts';
 
 interface ToolResult<Name extends string, Args, Result> {
   toolCallId: string;
@@ -21,23 +21,29 @@ export type Messages = Message[];
 
 export type StreamingOptions = Omit<Parameters<typeof _streamText>[0], 'model'>;
 
-// export function streamText(messages: Messages, env: Env, options?: StreamingOptions) {
-//   return _streamText({
-//     model: getOpenAIModel(getAPIKey(env)),
-//     system: getSystemPrompt(),
-//     maxTokens: MAX_TOKENS,
-//     headers: {
-//       'openai-beta': 'max-tokens-gpt-4o-2024-07-15',
-//     },
-//     messages: convertToCoreMessages(messages),
-//     ...options,
-//   });
-// }
+export function streamText(messages: Messages, env: Env, options?: StreamingOptions & { modelType?: ModelType }) {
+  const modelType = options?.modelType || 'gpt-4o';
+  let model;
+  let system = getSystemPrompt();
 
-export function streamText(messages: Messages, env: Env, options?: StreamingOptions) {
+  switch (modelType) {
+    case 'gpt-4o':
+      model = getOpenAI4oModel(getAPIKey(env));
+      break;
+    case 'gpt-4o-mini':
+      model = getOpenAI4ominiModel(getAPIKey(env));
+      break;
+    case 'gemini-1.5-pro':
+      model = getGoogleGenerativeAIModel(getGoogleAPIKey(env));
+      system = ''; // Geminiモデルはsystemプロンプトをサポートしていないため
+      break;
+    default:
+      throw new Error(`Unsupported model type: ${modelType}`);
+  }
+
   return _streamText({
-    model: getGoogleGenerativeAIModel(getGoogleAPIKey(env)),
-    system: getSystemPrompt(),
+    model,
+    system,
     maxTokens: MAX_TOKENS,
     messages: convertToCoreMessages(messages as any),
     ...options,

@@ -1,11 +1,19 @@
 import { createOpenAI } from '@ai-sdk/openai';
 import { createGoogleGenerativeAI } from '@ai-sdk/google';
-export function getOpenAIModel(apiKey: string) {
+export function getOpenAI4oModel(apiKey: string) {
   const openai = createOpenAI({
     apiKey,
   });
 
-  return openai('gpt-4o');
+  return openai('gpt-4o-mini');
+}
+
+export function getOpenAI4ominiModel(apiKey: string) {
+  const openai = createOpenAI({
+    apiKey,
+  });
+
+  return openai('gpt-4o-mini');
 }
 
 export function getGoogleGenerativeAIModel(apiKey: string) {
